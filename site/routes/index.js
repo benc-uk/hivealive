@@ -6,8 +6,13 @@ router
 .get('/', function (req, res, next) {
   res.render('index', 
   { 
-    title: 'Home'
+    title: 'Hivematic: Login'
   });
 })
+
+.post('/login', function (req, res, next) {
+  res.redirect('/home');
+})
+
 
 module.exports = router;

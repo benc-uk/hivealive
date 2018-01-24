@@ -1,14 +1,22 @@
-<nav class="navbar navbar-default" role="navigation">
-   <div class="container-fluid">
+<nav class="navbar navbar-inverse" role="navigation">
+  <div class="container-fluid">
 
-       <div class="navbar-header">
-           <a class="navbar-brand" href="/"> <i class="fa fa-home"></i> <%= site.name %> </a>
-       </div>
+    <div class="navbar-left">
+      <img src="/public/img/logo.png">
+      <a class="navbar-brand" href="#"> Hivematic</a>
+    </div>
 
-       <ul class="nav navbar-nav">
-           <li><a href="/">Home</a></li>
-           <li><a href="/about">About</a></li>
-       </ul>
+    <div class="navbar-right hidden-xs hidden-sm">
+      <a href="/hives" class="btn btn-default navbar-btn"><i class="fa fa-eye"></i>&nbsp;View Hives</a>
+      <a href="/reports" class="btn btn-default navbar-btn"><i class="fa fa-pie-chart"></i>&nbsp;Reports</a>
+      <a href="/admin" class="btn btn-default navbar-btn"><i class="fa fa-wrench"></i>&nbsp;Hive Admin</a>
+      <a href="/" class="btn btn-default navbar-btn btn-primary"><i class="fa fa-user"></i></a>
+      &nbsp; &nbsp;
+    </div>
 
-   </div>
+    <div class="navbar-right visible-xs visible-sm">
+        <a href="#" class="btn btn-default navbar-btn btn-primary"><i class="fa fa-bars"></i></a>
+    </div>
+
+  </div>
 </nav>

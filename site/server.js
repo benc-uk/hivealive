@@ -3,13 +3,13 @@ var express = require('express');
 var logger = require('morgan');
 var app = express();
 var fs = require("fs");
-
-// Load in config data stuff and pass to app locals 
-var config = require('./config');
-app.locals = config;
+var bodyParser = require('body-parser')
 
 // Set the view engine to ejs
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set up logging
 if (app.get('env') === 'production') {

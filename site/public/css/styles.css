@@ -1,8 +1,30 @@
+* {
+   font-size: 110%;   
+}
+
 body { 
    padding-top: 20px; 
+   background-image: url(/public/img/back.svg);
+   background-size: cover;
 }
 
 footer {
    float: right;
    padding-right: 10px
+}
+
+.navbar img {
+   height: 70px;
+   float: left;
+   padding-right: 10px;
+   padding-top: 5px;
+}
+
+.navbar-left a {
+   font-size: 35px !important;
+   padding-top: 25px !important;
+}
+
+.navbar a {
+   font-size: 20px;
 }
