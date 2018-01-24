@@ -5,7 +5,7 @@ router
 .get('/home', function (req, res, next) {
   res.render('home', 
   { 
-    title: 'Hivematic: Portal'
+    title: 'HiveAlive: Portal'
   });
 })
 
@@ -13,7 +13,7 @@ router
 .get('/hives', function (req, res, next) {
   res.render('hives', 
   { 
-    title: 'Hivematic: Portal'
+    title: 'HiveAlive: Portal'
   });
 })
 
@@ -21,7 +21,7 @@ router
 .get('/reports', function (req, res, next) {
   res.render('reports', 
   { 
-    title: 'Hivematic: Reports'
+    title: 'HiveAlive: Reports'
   });
 })
 
@@ -29,7 +29,7 @@ router
 .get('/admin', function (req, res, next) {
   res.render('admin', 
   { 
-    title: 'Hivematic: Admin'
+    title: 'HiveAlive: Admin'
   });
 })
 
