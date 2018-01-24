@@ -19,7 +19,7 @@ router
 
 
 .get('/reports', function (req, res, next) {
-  res.render('home', 
+  res.render('reports', 
   { 
     title: 'Hivematic: Reports'
   });
@@ -27,7 +27,7 @@ router
 
 
 .get('/admin', function (req, res, next) {
-  res.render('home', 
+  res.render('admin', 
   { 
     title: 'Hivematic: Admin'
   });
