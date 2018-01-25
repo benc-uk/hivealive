@@ -73,10 +73,11 @@ function refreshData() {
     function(response) {
       if (response.status !== 200) {
         console.log('### Hive data API HTTP error! Status Code: ' +response.status);
+        error();
         return;
       }
 
-      // Examine the text in the response
+      showGauges();
       response.json().then(function(data) {
         tempGauge.set(data.temperature);
         humidGauge.set(data.humidity);
@@ -88,4 +89,15 @@ function refreshData() {
   .catch(function(err) {
     console.log('### Hive data API fetch error!', err);
   });  
+}
+
+function error() {
+  document.getElementById('gauges').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('error').innerHTML = "No data found in the past 24hrs for this hive"
+}
+
+function showGauges() {
+  document.getElementById('gauges').style.display = 'block';
+  document.getElementById('error').style.display = 'none';
 }

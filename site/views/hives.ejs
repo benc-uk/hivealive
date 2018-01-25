@@ -23,38 +23,41 @@
       <div class="panel-body"  style="background-color:#eee">
       
         <div id="hiveMap"></div>
+        <div id="gauges">
+          <div class="row" style="background-color:#eee">
 
-        <div class="row" style="background-color:#eee">
-
-          <div class="col-xs-6">
+            <div class="col-xs-6">
               <h4>Temperature</h4> 
               <div class="gaugeval unittemp" id="tempVal"></div>
               <canvas id="tempGauge"></canvas>
-          </div>
+            </div>
 
-          <div class="col-xs-6">
+            <div class="col-xs-6">
               <h4>Humidity</h4> 
               <div class="gaugeval unitperc" id="humidVal"></div>
               <canvas id="humidGauge"></canvas>
+            </div>
+
           </div>
 
-        </div>
+          <div class="row" style="background-color:#eee">
 
-        <div class="row" style="background-color:#eee">
-
-          <div class="col-xs-6">
+            <div class="col-xs-6">
               <h4>Motion Level</h4> 
               <div class="gaugeval" id="motionVal"></div>
               <canvas id="motionGauge"></canvas>
-          </div>
+            </div>
 
-          <div class="col-xs-6">
+            <div class="col-xs-6">
               <h4>Sound Levels</h4> 
               <div class="gaugeval unitdb" id="soundVal"></div>
               <canvas id="soundGauge"></canvas>
-          </div>
+            </div>
 
-        </div>        
+          </div>        
+        </div>
+
+        <h3 id="error" class="text-warning"></h3>
 
       </div>
     </div>
