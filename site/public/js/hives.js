@@ -2,7 +2,7 @@ var tempGauge;
 var humidGauge;
 var motionGauge;
 var soundGauge;
-const REFRESH = 3;
+const REFRESH = 5;
 
 function setUpGague(gagueId, min, max, c1, c2) {
   var opts = {
@@ -65,7 +65,7 @@ function initGauges() {
 }
 
 function refreshData() {
-  console.log(`### Refresh ${activeHive}`)
+  //console.log(`### Refresh ${activeHive}`)
   if(!activeHive) return;
 
   fetch(`${API_ENDPOINT}/hiveData/${activeHive.id}`)
