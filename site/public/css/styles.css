@@ -40,3 +40,47 @@ footer {
 }
 
 .text-white { color: #FFF; }
+
+.row canvas {
+   background-color: #FFF;
+   width: 100%;
+   height: 100%;
+   padding-bottom: 10px;
+}
+.gaugeval {
+   position: absolute;
+   bottom: 5px;
+   left: 0px;
+   right: 0;
+   text-align: center;
+   font-size: 2em;
+   color: rgb(146, 146, 146);
+   font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.unittemp::after { 
+   content: "°C";
+}
+.unittemp:empty { 
+   display: none;
+}
+
+.unitperc::after { 
+   content: "%";
+}
+.unitperc:empty { 
+   display: none;
+}
+
+.unitdb::after { 
+   content: " dB";
+}
+.unitdb:empty { 
+   display: none;
+}
+
+#hiveMap {
+   position: relative;
+   width: 100%;
+   height: 400px;
+}

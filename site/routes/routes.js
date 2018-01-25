@@ -1,5 +1,8 @@
+const request = require('request');
 const express = require('express');
 const router = express.Router();
+
+const API_ENDPOINT = process.env.API_ENDPOINT || "https://hive-poc-func.azurewebsites.net/api"
 
 router
 .get('/home', function (req, res, next) {
@@ -11,9 +14,15 @@ router
 
 
 .get('/hives', function (req, res, next) {
-  res.render('hives', 
-  { 
-    title: 'HiveAlive: Portal'
+  request(`${API_ENDPOINT}/hives`, { json: true }, (err, apires, data) => {
+    if (err) { return console.log(err); }
+    console.log(data);
+    res.render('hives', 
+    { 
+      title: 'HiveAlive: Portal',
+      hives: data,
+      hivesJSON: JSON.stringify(data)
+    });
   });
 })
 

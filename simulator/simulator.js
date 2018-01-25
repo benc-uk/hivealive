@@ -8,6 +8,8 @@ var device = args[1];
 var device_key = args[2];
 var interval = parseFloat(args[3]);
 
+console.log(`### Starting to send data to '${hostname}' from device '${device}', at interval ${interval}millsec`);
+
 // IoT connection stuff
 var clientFromConnectionString = require('azure-iot-device-mqtt').clientFromConnectionString;
 var Message = require('azure-iot-device').Message;
@@ -20,9 +22,9 @@ var client = clientFromConnectionString(connectionString);
 //
 var connectCallback = function (err) {
    if (err) {
-      console.log('Could not connect: ' + err);
+      console.log('### Could not connect: ' + err);
    } else {
-      console.log('Client ('+device+') connected');
+      console.log('### Client ('+device+') connected');
 
       // Call the sendMessage() function every interval, loops forever
       setInterval(sendMessage, interval);
@@ -33,14 +35,18 @@ var connectCallback = function (err) {
 // Send a message to the IoT hub
 //
 function sendMessage() {
-   var windSpeed = 8 + (Math.random() * 7);
    var data = JSON.stringify({ 
       deviceId: device, 
       uuid: uuid(), 
-      windSpeed: windSpeed 
+      temperature: 28 + (Math.random() * 11),
+      humidity: 50 + (Math.random() * 20),
+      motionLevel: Math.random(),
+      soundLevel: 8 + (Math.random() * 7),
+      soundFreq: 800 + (Math.random() * 800)
    });
+
    var message = new Message(data);
-   console.log("Sending message: " + message.getData());
+   console.log("### Sending message: " + message.getData());
    client.sendEvent(message, printResultFor('send'));
 }
 

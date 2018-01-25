@@ -1,0 +1,36 @@
+const BINGMAP_API_KEY = 'AmnWtLClx6Sr2XKPwi1LFHrZDuCpH2jPZjbhzyMpC6aQN_dgQfaUVGCnJhGNX67L'
+
+var map;
+
+function initMap() {
+  map = new Microsoft.Maps.Map('#hiveMap', {
+    credentials: BINGMAP_API_KEY,
+    disablePanning: false,
+    disableStreetside: true,
+    showMapTypeSelector: false,
+    showZoomButtons: true,
+    showLocateMeButton: false
+  });
+
+  map.setView({
+    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+    center: new Microsoft.Maps.Location(hives[0].location[0], hives[0].location[1]),
+    zoom: 18,
+  });
+
+  hives.forEach(h => {
+    addHivetoMap(h);
+  });
+}
+
+function addHivetoMap(hive) {
+  var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(hive.location[0], hive.location[1]), {
+    title: hive.name,
+    icon: '/public/img/hive-sm.png',
+    anchor: new Microsoft.Maps.Point(16, 16)
+  });
+
+  map.entities.push(pin);
+  pin.metadata = {hive: hive};
+  Microsoft.Maps.Events.addHandler(pin, 'click', e => { selectHive(e.target.metadata.hive) });
+}
