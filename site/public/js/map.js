@@ -26,7 +26,7 @@ function initMap() {
 function addHivetoMap(hive) {
   var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(hive.location[0], hive.location[1]), {
     title: hive.name,
-    icon: '/public/img/hive-sm.png',
+    icon: '/public/img/hive-48.png',
     anchor: new Microsoft.Maps.Point(16, 16)
   });
 
