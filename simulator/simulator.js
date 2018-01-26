@@ -17,6 +17,10 @@ var uuid = require('uuid/v4');
 var connectionString = 'HostName=' + hostname + ';DeviceId=' + device + ';SharedAccessKey=' + device_key;
 var client = clientFromConnectionString(connectionString);
 
+// Initial simulated data
+var tempPrev = 32;
+var humPrev = 50;
+
 //
 // Callback when device connected, sets up the message sending loop
 //
@@ -35,11 +39,14 @@ var connectCallback = function (err) {
 // Send a message to the IoT hub
 //
 function sendMessage() {
+   let t = tempPrev + (Math.random() * 12) - 6; tempPrev = t;
+   let h = humPrev + (Math.random() * 40) - 20; humPrev = h
+
    var data = JSON.stringify({ 
       deviceId: device, 
       uuid: uuid(), 
-      temperature: 28 + (Math.random() * 11),
-      humidity: 50 + (Math.random() * 20),
+      temperature: t,
+      humidity: h,
       motionLevel: Math.random(),
       soundLevel: 8 + (Math.random() * 7),
       soundFreq: 800 + (Math.random() * 800)

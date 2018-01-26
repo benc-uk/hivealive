@@ -67,25 +67,22 @@ function initGauges() {
 function refreshData() {
   //console.log(`### Refresh ${activeHive}`)
   if(!activeHive) return;
-
   fetch(`${API_ENDPOINT}/hiveData/${activeHive.id}`)
-  .then(
-    function(response) {
-      if (response.status !== 200) {
-        console.log('### Hive data API HTTP error! Status Code: ' +response.status);
-        error();
-        return;
-      }
-
-      showGauges();
-      response.json().then(function(data) {
-        tempGauge.set(data.temperature);
-        humidGauge.set(data.humidity);
-        motionGauge.set(data.motionLevel);
-        soundGauge.set(data.soundLevel);
-      });
+  .then(res => {
+    if (res.status !== 200) {
+      console.log('### Hive data API HTTP error! Status Code: ' +res.status);
+      error();
+      return;
     }
-  )
+    
+    showGauges();
+    res.json().then(function(data) {
+      tempGauge.set(data.currentData.temperature);
+      humidGauge.set(data.currentData.humidity);
+      motionGauge.set(data.currentData.motionLevel);
+      soundGauge.set(data.currentData.soundLevel);
+    });
+  })
   .catch(function(err) {
     console.log('### Hive data API fetch error!', err);
   });  
@@ -94,7 +91,7 @@ function refreshData() {
 function error() {
   document.getElementById('gauges').style.display = 'none';
   document.getElementById('error').style.display = 'block';
-  document.getElementById('error').innerHTML = "No data found in the past 24hrs for this hive"
+  document.getElementById('error').innerHTML = "No data found in the past hour for this hive"
 }
 
 function showGauges() {
