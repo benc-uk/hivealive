@@ -18,44 +18,41 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="text-white"> Realtime Hive Details: <span id='hiveName'></span></h3>
-
       </div>
-      <div class="panel-body"  style="background-color:#eee">
+      <div class="panel-body"  style="background-color:#ddd">
       
         <div id="hiveMap"></div>
-        <div id="gauges">
-          <div class="row" style="background-color:#eee">
+        <br/>
 
+        <div id="gauges">
+          <div class="row" style="">
             <div class="col-xs-6">
-              <h4>Temperature <span id='tempInfo'></span></h4> 
+              <h4>&nbsp;<i class="fa fa-thermometer-half"></i> Temperature &nbsp; <span class='info' id='tempInfo'></span></h4> 
               <div class="gaugeval unittemp" id="tempVal"></div>
               <canvas id="tempGauge"></canvas>
             </div>
 
             <div class="col-xs-6">
-              <h4>Humidity <span id='humInfo'></span></h4> 
+              <h4>&nbsp;<i class="fa fa-tint"></i> Humidity &nbsp; <span class='info' id='humInfo'></span></h4> 
               <div class="gaugeval unitperc" id="humidVal"></div>
               <canvas id="humidGauge"></canvas>
             </div>
-
           </div>
 
-          <div class="row" style="background-color:#eee">
-
+          <div class="row" style="">
             <div class="col-xs-6">
-              <h4>Motion Level</h4> 
+              <h4>&nbsp;<i class="fa fa-flag"></i> Air Quality &nbsp; <span class='info' id='motionInfo'></span></h4> 
               <div class="gaugeval" id="motionVal"></div>
               <canvas id="motionGauge"></canvas>
             </div>
 
             <div class="col-xs-6">
-              <h4>Sound Levels</h4> 
+              <h4>&nbsp;<i class="fa fa-umbrella"></i> Pressure &nbsp; <span class='info' id='soundInfo'></span></h4> 
               <div class="gaugeval unitdb" id="soundVal"></div>
               <canvas id="soundGauge"></canvas>
             </div>
-
           </div>        
-        </div>
+        </div> <!-- end gauges -->
 
         <h3 id="error" class="text-warning"></h3>
 
@@ -68,7 +65,7 @@
   <script>
     var hives = <%- hivesJSON %>;
     var activeHive = null;
-    initGauges();
+    initAllGauges();
     selectHive(hives[0]);
   </script>
 

@@ -53,7 +53,7 @@ function sendMessage() {
    });
 
    var message = new Message(data);
-   console.log("### Sending message: " + message.getData());
+   console.log(`### ${new Date()} message: ` + message.getData());
    client.sendEvent(message, printResultFor('send'));
 }
 
