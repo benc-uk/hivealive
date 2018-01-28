@@ -733,11 +733,12 @@
            this.ctx.beginPath();
            this.ctx.arc(0, 0, tmpRadius, this.getAngle(min), this.getAngle(max), false);
 
-           var gradient=this.ctx.createRadialGradient(100, 100, 100, 100, 100, 0);
-            gradient.addColorStop("0","magenta");
-            gradient.addColorStop("0.5","blue");
-            gradient.addColorStop("1.0","red");
-            this.ctx.strokeStyle=gradient;
+           // HACK to add gradient to gauge
+           var gradient=this.ctx.createRadialGradient(0, 0, radius * 3, 0, 0, 0);
+           gradient.addColorStop("0", zone.strokeStyle);
+           gradient.addColorStop("0.65", zone.strokeStyle);
+           gradient.addColorStop("1.0", "black");
+           this.ctx.strokeStyle = gradient;
 
            this.ctx.stroke();
          }
