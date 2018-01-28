@@ -1,6 +1,6 @@
 var tempGauge;
 var humidGauge;
-var motionGauge;
+var airGauge;
 var soundGauge;
 const REFRESH_RATE = 5;   // In seconds
 
@@ -8,14 +8,14 @@ const REFRESH_RATE = 5;   // In seconds
 // Setup the gauges 
 //
 function initAllGauges() {
-  tempGauge = setUpGauge('tempGauge', 0, 100, 0.5, 0.75);
-  humidGauge = setUpGauge('humidGauge', 0, 100, 0.8, 0.9);
-  motionGauge = setUpGauge('motionGauge', 0, 1, 1, 1);
-  soundGauge = setUpGauge('soundGauge', 0, 30, 1, 1);
+  tempGauge = setUpGauge('tempGauge', -10, 50, -10, 38, 45);
+  humidGauge = setUpGauge('humidGauge', 0, 100, 0, 60, 90);
+  airGauge = setUpGauge('airGauge', 0, 100, 0, 10, 20, true);
+  soundGauge = setUpGauge('soundGauge', -80, 0, -80, -35, -15);
 
   tempGauge.setTextField(document.getElementById('tempVal'), 3);
   humidGauge.setTextField(document.getElementById('humidVal'), 1);
-  motionGauge.setTextField(document.getElementById('motionVal'), 2);
+  airGauge.setTextField(document.getElementById('airVal'), 2);
   soundGauge.setTextField(document.getElementById('soundVal'), 2);
 
   setInterval(refreshData, REFRESH_RATE * 1000);
@@ -25,33 +25,43 @@ function initAllGauges() {
 //
 // Setup a new gauge 
 //
-function setUpGauge(gaugeId, min, max, c1, c2) {
+function setUpGauge(gaugeId, min, max, t0, t1, t2, reverse) {
+  var staticZones = [
+    { strokeStyle: "#30B32D", min: t0, max: t1 },
+    { strokeStyle: "#FFDD00", min: t1, max: t2 },
+    { strokeStyle: "#F03E3E", min: t2, max: max }
+  ]
+  if(reverse) { 
+    staticZones = [
+      { strokeStyle: "#F03E3E", min: t0, max: t1 },
+      { strokeStyle: "#FFDD00", min: t1, max: t2 },
+      { strokeStyle: "#30B32D", min: t2, max: max }
+    ]
+  }
+
   var opts = {
-    angle: -0.15, 
-    lineWidth: 0.3, 
-    radiusScale: 1, 
+    angle: -0.15,
+    lineWidth: 0.3,
+    radiusScale: 1,
     pointer: {
-      length: 0.5, 
-      strokeWidth: 0.045, 
-      color: '#444' 
+      length: 0.5,
+      strokeWidth: 0.045,
+      color: '#444'
     },
-    limitMax: false,     
-    limitMin: false,     
-    strokeColor: '#ddd',  
+    colorStart: '#342356',
+    limitMax: false,
+    limitMin: false,
+    strokeColor: '#ddd',
     generateGradient: true,
-    highDpiSupport: true,     
+    highDpiSupport: true,
     fontSize: 40,
-    staticZones: [
-      {strokeStyle: "#30B32D", min: 0, max: c1 * max}, 
-      {strokeStyle: "#FFDD00", min: c1 * max, max: c2 * max}, 
-      {strokeStyle: "#F03E3E", min: c2 * max, max: max}  
-   ]
+    staticZones: staticZones
   };
-  
-  var gauge = new Gauge(document.getElementById(gaugeId)).setOptions(opts); 
-  gauge.maxValue = max; 
-  gauge.setMinValue(min);  
-  gauge.animationSpeed = 32; 
+
+  var gauge = new Gauge(document.getElementById(gaugeId)).setOptions(opts);
+  gauge.maxValue = max;
+  gauge.setMinValue(min);
+  gauge.animationSpeed = 32;
   return gauge;
 }
 
@@ -93,17 +103,26 @@ function refreshData() {
       // Update gauges with current values
       tempGauge.set(data.currentData.temperature);
       humidGauge.set(data.currentData.humidity);
-      motionGauge.set(data.currentData.motionLevel);
-      soundGauge.set(data.currentData.soundLevel);
+      airGauge.set(data.currentData.airQuality);
+      soundGauge.set(data.currentData.soundDb);
     
       // Calculate and show delta trend from previous measure
       if(data.prevData.hasOwnProperty('temperature')) {
         let delta = data.currentData.temperature - data.prevData.temperature;
         let sym = delta < 0 ? '<i class="fa fa-arrow-down"></i>' : '<i class="fa fa-arrow-up"></i>';
         $('#tempInfo').html(`${sym} ${Math.abs(delta.toFixed(2))}`);
+
         delta = data.currentData.humidity - data.prevData.humidity;
         sym = delta < 0 ? '<i class="fa fa-arrow-down"></i>' : '<i class="fa fa-arrow-up"></i>';
         $('#humInfo').html(`${sym} ${Math.abs(delta.toFixed(2))}`);
+
+        delta = data.currentData.airQuality - data.prevData.airQuality;
+        sym = delta < 0 ? '<i class="fa fa-arrow-down"></i>' : '<i class="fa fa-arrow-up"></i>';
+        $('#airInfo').html(`${sym} ${Math.abs(delta.toFixed(2))}`);
+
+        delta = data.currentData.soundDb - data.prevData.soundDb;
+        sym = delta < 0 ? '<i class="fa fa-arrow-down"></i>' : '<i class="fa fa-arrow-up"></i>';
+        $('#soundInfo').html(`${sym} ${Math.abs(delta.toFixed(2))}`);                
       }
     });
   })

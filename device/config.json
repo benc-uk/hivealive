@@ -1,0 +1,12 @@
+{
+   "iotEndpoint":   "hive-poc.azure-devices.net",
+   "iotDeviceId":   "raspi-1",
+   "iotDeviceKey":  "jIcRdwjb/JQ4zr56XiKU150HShs5Kqc5UgTn5X5CbPs=",
+   "pollInterval":  30,
+   
+   "soundDev":      "hw:0,1",
+   "soundLength":   2,
+
+   "dhtGpioPin":    17,
+   "dhtScript":     "./dht22.py"
+}

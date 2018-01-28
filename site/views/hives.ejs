@@ -3,7 +3,7 @@
 
 <head>
   <% include partials/head %>
-  <script type='text/javascript' src="//bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+  <script type='text/javascript' src="/public/js/lib/gauge.js"></script>
   <script type='text/javascript' src='//www.bing.com/api/maps/mapcontrol?callback=initMap' async defer></script>
 </head>
 
@@ -41,13 +41,13 @@
 
           <div class="row" style="">
             <div class="col-xs-6">
-              <h4>&nbsp;<i class="fa fa-flag"></i> Air Quality &nbsp; <span class='info' id='motionInfo'></span></h4> 
-              <div class="gaugeval" id="motionVal"></div>
-              <canvas id="motionGauge"></canvas>
+              <h4>&nbsp;<i class="fa fa-flag"></i> Air Quality &nbsp; <span class='info' id='airInfo'></span></h4> 
+              <div class="gaugeval" id="airVal"></div>
+              <canvas id="airGauge"></canvas>
             </div>
 
             <div class="col-xs-6">
-              <h4>&nbsp;<i class="fa fa-umbrella"></i> Pressure &nbsp; <span class='info' id='soundInfo'></span></h4> 
+              <h4>&nbsp;<i class="fa fa-volume-up"></i> Sound Level &nbsp; <span class='info' id='soundInfo'></span></h4> 
               <div class="gaugeval unitdb" id="soundVal"></div>
               <canvas id="soundGauge"></canvas>
             </div>
