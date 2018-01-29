@@ -1,7 +1,7 @@
 {
-  "name": "hivealive-iot-device",
+  "name": "hivealive-iot-client",
   "version": "1.0.0",
-  "description": "HiveAlive IOT monitoring device",
+  "description": "HiveAlive IOT monitoring client",
   "main": "monitor.js",
   "scripts": {   
     "start": "node monitor.js"

@@ -39,8 +39,8 @@ var connect = function (err) {
 // Collect data and send to IOT hub
 //
 async function collectData() {
-  let temperature = 32.79;
-  let humidity = 45.233;
+  let temperature = NaN;
+  let humidity = NaN;
   let airQuality = 23.601;
   let soundDb = NaN;
 
@@ -51,12 +51,12 @@ async function collectData() {
   let capture = new SoundCapture(2000, WAV_FILENAME);
   await capture.record();
 
-  sleep(300);
+  sleep(300); // Tiny delay helps prevent errors, file not closed, etc
 
   // Analyse sound using ffmpeg command, finding peak level
   try {
-    let out = await executePromise(`ffmpeg -i /tmp/${WAV_FILENAME} -af astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level -f null -`);
-    let m = out.stderr.match(/Peak level dB:\s(.*?)\n/i);
+    let out = await executeCommand(`ffmpeg -i /tmp/${WAV_FILENAME} -af astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level -f null -`);
+    let m = out.stderr.match(/RMS peak dB:\s(.*?)\n/i);
     //console.log(out.stderr);
     soundDb = parseFloat(m[1]);
     if(soundDb < -100.0) soundDb = NaN;
@@ -66,7 +66,7 @@ async function collectData() {
 
   // Get temperature & humidity
   try {
-    let out = await executePromise(`python ${config.dhtScript} ${config.dhtGpioPin}`);
+    let out = await executeCommand(`python ${config.dhtScript} ${config.dhtGpioPin}`);
     let dhtValues = out.stdout.split(',');
 
     console.log('### Got data from DHT22 sensor');
@@ -104,13 +104,13 @@ client.open(connect);
 //
 // Helper functions here...
 //
-function executePromise(script) {
+function executeCommand(script) {
   return new Promise((resolve, reject) => {
     require('child_process').exec(script, (error, stdout, stderr) => {
       if (error) {
         reject(stderr);
       } else {
-        // Weird case with ffmpeg that output we need is in stderr!!
+        // Return both stdout and stderr in a little tuple object
         resolve({ stdout: stdout, stderr: stderr });
       }
     });
