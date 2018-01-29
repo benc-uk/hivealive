@@ -17,8 +17,9 @@ var client = clientFromConnectionString(connectionString);
 // OS and general Node things
 const exec = require('child_process').exec;
 var uuid = require('uuid/v4');
+const utils = require('./utils');
 
-const WAV_FILENAME = "hive-sound.wav";
+const WAV_PATH = "/tmp/hive-sound.wav";
 
 //
 // Callback when device connected, sets up the message sending loop
@@ -31,6 +32,9 @@ var connect = function (err) {
 
     // Call the collect() function every interval, loops forever
     setInterval(collectData, config.pollInterval * 1000);
+    
+    // Initial call at startup
+    collectData();
   }
 };
 
@@ -46,18 +50,21 @@ async function collectData() {
 
   console.log(`### ${new Date()} starting data collection...`);
   
-  // Start sound capture
-  let SoundCapture = require('./sound');
-  let capture = new SoundCapture(2000, WAV_FILENAME);
-  await capture.record();
+  // Start sound capture using arecord
+  try {
+    console.log(`### Capturing ${config.soundLength} seconds of audio...`);
+    let out = await utils.executeCommand(`arecord -D ${config.soundDev} -d ${config.soundLength} -f ${config.soundFormat} -r ${config.soundRate} ${WAV_PATH}`);
+  } catch (error) {
+    console.log(error);
+  }  
 
-  sleep(300); // Tiny delay helps prevent errors, file not closed, etc
+  utils.sleep(300); // Small delay helps prevent errors, file not closed, etc
 
   // Analyse sound using ffmpeg command, finding peak level
   try {
-    let out = await executeCommand(`ffmpeg -i /tmp/${WAV_FILENAME} -af astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level -f null -`);
+    let out = await utils.executeCommand(`ffmpeg -i ${WAV_PATH} -af astats=metadata=1:reset=1,ametadata=print:key=lavfi.astats.Overall.RMS_level -f null -`);
     let m = out.stderr.match(/RMS peak dB:\s(.*?)\n/i);
-    //console.log(out.stderr);
+    
     soundDb = parseFloat(m[1]);
     if(soundDb < -100.0) soundDb = NaN;
   } catch (error) {
@@ -66,7 +73,7 @@ async function collectData() {
 
   // Get temperature & humidity
   try {
-    let out = await executeCommand(`python ${config.dhtScript} ${config.dhtGpioPin}`);
+    let out = await utils.executeCommand(`python ${config.dhtScript} ${config.dhtGpioPin}`);
     let dhtValues = out.stdout.split(',');
 
     console.log('### Got data from DHT22 sensor');
@@ -100,23 +107,3 @@ async function collectData() {
 //
 client.open(connect);
 
-
-//
-// Helper functions here...
-//
-function executeCommand(script) {
-  return new Promise((resolve, reject) => {
-    require('child_process').exec(script, (error, stdout, stderr) => {
-      if (error) {
-        reject(stderr);
-      } else {
-        // Return both stdout and stderr in a little tuple object
-        resolve({ stdout: stdout, stderr: stderr });
-      }
-    });
-  });
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}

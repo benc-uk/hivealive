@@ -3,9 +3,11 @@
    "iotDeviceId":   "raspi-1",
    "iotDeviceKey":  "jIcRdwjb/JQ4zr56XiKU150HShs5Kqc5UgTn5X5CbPs=",
    "pollInterval":  60,
-   
-   "soundDev":      "hw:0,1",
+
    "soundLength":   5,
+   "soundDev":      "hw:1,0",
+   "soundRate":     44100,
+   "soundFormat":   "S16_LE",
 
    "dhtGpioPin":    17,
    "dhtScript":     "./dht22.py"
