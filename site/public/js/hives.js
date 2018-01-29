@@ -124,6 +124,10 @@ function refreshData() {
         sym = delta < 0 ? '<i class="fa fa-arrow-down"></i>' : '<i class="fa fa-arrow-up"></i>';
         $('#soundInfo').html(`${sym} ${Math.abs(delta.toFixed(2))}`);                
       }
+
+      // Update info
+      let dateTime = new Date(data.currentData.Timestamp);
+      $('#info').html(`Data timestamp: ${dateTime.toGMTString()}`);
     });
   })
   .catch(function(err) {
