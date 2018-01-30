@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "HiveAlive IOT monitoring client",
   "main": "monitor.js",
-  "scripts": {   
+  "scripts": {
     "start": "node monitor.js"
   },
   "author": "Ben Coleman",
@@ -13,7 +13,8 @@
     "azure-iot-device-mqtt": "^1.1.7",
     "azure-iothub": "^1.1.8",
     "azure-storage": "^2.7.0",
-    "uuid": "^3.0.1",
-    "node-arecord": "^0.0.2"
+    "node-arecord": "^0.0.2",
+    "simple-node-logger": "^0.93.33",
+    "uuid": "^3.0.1"
   }
 }
