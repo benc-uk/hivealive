@@ -19,37 +19,37 @@
       <div class="panel-heading">
         <h3 class="text-white"> Realtime Hive Details: <span id='hiveName'></span></h3>
       </div>
-      <div class="panel-body"  style="background-color:#ddd">
+      <div class="panel-body portal-panel">
       
         <div id="hiveMap"></div>
         <br/>
 
         <div id="gauges">
-          <div class="row" style="">
+          <div class="row">
             <div class="col-xs-12 col-md-6">
-              <h4>&nbsp;<i class="fa fa-thermometer-half"></i> Temperature &nbsp; <span class='info' id='tempInfo'></span></h4> 
+              <div class="gaugetitle">&nbsp;<i class="fa fa-thermometer-half"></i> Temperature &nbsp; <span class='info' id='tempInfo'></span></div> 
               <div class="gaugeval unittemp" id="tempVal"></div>
-              <canvas id="tempGauge"></canvas>
+              <canvas class="gaugecanvas" id="tempGauge"></canvas>
             </div>
 
             <div class="col-xs-12 col-md-6">
-              <h4>&nbsp;<i class="fa fa-tint"></i> Humidity &nbsp; <span class='info' id='humInfo'></span></h4> 
+              <div class="gaugetitle">&nbsp;<i class="fa fa-tint"></i> Humidity &nbsp; <span class='info' id='humInfo'></span></div>
               <div class="gaugeval unitperc" id="humidVal"></div>
-              <canvas id="humidGauge"></canvas>
+              <canvas class="gaugecanvas" id="humidGauge"></canvas>
             </div>
           </div>
 
-          <div class="row" style="">
+          <div class="row">
             <div class="col-xs-12 col-md-6">
-              <h4>&nbsp;<i class="fa fa-flag"></i> Air Quality &nbsp; <span class='info' id='airInfo'></span></h4> 
+              <div class="gaugetitle">&nbsp;<i class="fa fa-flag"></i> Air Quality &nbsp; <span class='info' id='airInfo'></span></div>
               <div class="gaugeval unitperc" id="airVal"></div>
-              <canvas id="airGauge"></canvas>
+              <canvas class="gaugecanvas" id="airGauge"></canvas>
             </div>
 
             <div class="col-xs-12 col-md-6">
-              <h4>&nbsp;<i class="fa fa-volume-up"></i> Sound Level &nbsp; <span class='info' id='soundInfo'></span></h4> 
+              <div class="gaugetitle">&nbsp;<i class="fa fa-volume-up"></i> Sound Level &nbsp; <span class='info' id='soundInfo'></span></div> 
               <div class="gaugeval unitdb" id="soundVal"></div>
-              <canvas id="soundGauge"></canvas>
+              <canvas class="gaugecanvas" id="soundGauge"></canvas>
             </div>
           </div>        
         </div> <!-- end gauges -->

@@ -9,6 +9,5 @@
    "soundRate":     44100,
    "soundFormat":   "S16_LE",
 
-   "dhtGpioPin":    17,
-   "dhtScript":     "./dht22.py"
+   "bmeTime":       5
 }

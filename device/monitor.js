@@ -9,6 +9,10 @@ var config = JSON.parse(require('fs').readFileSync("config.json"));
 // Static config values
 const WAV_PATH = "/tmp/hive-sound.wav";
 const LOG = "./logs/monitor.log";
+const BME680_SCRIPT = "./py/bme680-collect.py";
+const GAS_BASELINE = 250000.0;
+const HUMID_BASELINE = 20.0;
+const HUMID_WEIGHT = 0.25;
 
 // IoT connection stuff
 var clientFromConnectionString = require('azure-iot-device-mqtt').clientFromConnectionString;
@@ -21,6 +25,7 @@ const exec = require('child_process').exec;
 var uuid = require('uuid/v4');
 const utils = require('./utils');
 const log = require('simple-node-logger').createSimpleLogger(LOG);
+log.setLevel('info');
 
 //
 // Callback when device connected, sets up the message sending loop
@@ -50,7 +55,7 @@ async function collectData() {
   let collectError = false
 
   log.info(`Starting data collection...`);
-  
+
   // Start sound capture using arecord
   try {
     log.info(`Capturing ${config.soundLength} seconds of audio...`);
@@ -76,14 +81,33 @@ async function collectData() {
     log.error(error);
   }
 
-  // Get temperature & humidity
+  // Call the BME680 sensor to get temperature, humidity, pressure and air quality
   try {
-    let out = await utils.executeCommand(`python ${config.dhtScript} ${config.dhtGpioPin}`);
+    let out = await utils.executeCommand(`python ${BME680_SCRIPT} ${config.bmeTime}`);
     let dhtValues = out.stdout.split(',');
 
-    log.info('Got data from DHT22 sensor');
-    humidity = parseFloat(dhtValues[0].trim());
-    temperature = parseFloat(dhtValues[1].trim());
+    log.info('Got data from BME680 sensor');
+    temperature = parseFloat(dhtValues[0].trim());
+    pressure = parseFloat(dhtValues[1].trim());
+    humidity = parseFloat(dhtValues[2].trim());
+    gasResist = parseFloat(dhtValues[3].trim());
+
+    var humidOffset = humidity - HUMID_BASELINE;
+    var humidScore;
+    if(humidOffset > 0) {
+      humidScore = (100 - HUMID_BASELINE - humidOffset) / (100 - HUMID_BASELINE) * (HUMID_WEIGHT * 100);
+    } else {
+      humidScore = (HUMID_BASELINE + humidOffset) / HUMID_BASELINE * (HUMID_WEIGHT * 100);
+    }
+
+    var gasOffset = GAS_BASELINE - gasResist;
+    var gasScore;
+    if (gasOffset > 0) {
+      gasScore = (gasResist / GAS_BASELINE) * (100 - (HUMID_WEIGHT * 100));
+    } else {
+      gasScore = 100 - (HUMID_WEIGHT * 100);
+    }
+    airQuality = humidScore + gasScore;
 
     // Filter outlier values
     if(humidity > 100) humidity = NaN;
@@ -101,7 +125,8 @@ async function collectData() {
       temperature: temperature,
       humidity: humidity,
       airQuality: airQuality,
-      soundDb: soundDb
+      soundDb: soundDb,
+      pressure: pressure
     }
   });
 
@@ -109,7 +134,13 @@ async function collectData() {
   var message = new Message(msg);
   if(!collectError) {
     log.info(`Sending message to Azure: ${message.getData()}`);
-    client.sendEvent(message);
+    client.sendEvent(message, (err, res) => {
+      if(err) {
+        log.error(`IOT HUB ERROR ${JSON.stringify(err)}`)
+      } else {
+        log.trace(`IOT RESULT ${JSON.stringify(res)}`);
+      }
+    });
   } else {
     log.error(`Skipping message sending due to error`);  
   }
@@ -120,4 +151,3 @@ async function collectData() {
 //
 log.info(`Device started with config: ${JSON.stringify(config)}`);
 client.open(connect);
-
