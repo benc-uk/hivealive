@@ -11,4 +11,3 @@
 - **simulator**: Simple Node.js simulator for IOT Hub, posts sample messages. Use for testing
 - **site**: Node.js Express web site and portal
 
-bye
