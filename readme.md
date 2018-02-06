@@ -1,5 +1,9 @@
 # HiveAlive
-Blah blah IOT blah blah Dragon's Den blah blah
+
+|<img src="assets/logo.png" style="width:70%">|<h2>Open Source monitoring and data analytics for bee keepers and agricultural research</h2>|
+|-|-|
+
+
 
 ## Contents
 - **assets**: Images, PPTX and other stuff that isn't code
