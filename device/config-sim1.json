@@ -1,10 +1,10 @@
 {
   "iotEndpoint":   "hive-poc.azure-devices.net",
-  "iotDeviceId":   "raspi-1",
-  "iotDeviceKey":  "jIcRdwjb/JQ4zr56XiKU150HShs5Kqc5UgTn5X5CbPs=",
+  "iotDeviceId":   "test-hive-1",
+  "iotDeviceKey":  "DH10rezCXIw4mAi6xbnxt1rd1jxDQazh9WwBltxhnbc=",
   "pollInterval":  60,
 
-  "simulator":     false,
+  "simulator":     true,
   "soundLength":   5,
   "soundDev":      "hw:1,0",
   "soundRate":     44100,

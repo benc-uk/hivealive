@@ -16,6 +16,14 @@ class Utils {
   static sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+  static clamp(num, min, max) {
+    return Math.min(Math.max(num, min), max);
+  }
 }
+
+Number.prototype.clamp = function(min, max) {
+  return Math.min(Math.max(this, min), max);
+};
 
 module.exports = Utils;

@@ -3,12 +3,15 @@
 // Ben Coleman, 2018
 //
 
+// Get params
+if(process.argv.length < 3) { console.error("### No config filename provided. Exiting"); process.exit(1); }
+
 // Load config
-var config = JSON.parse(require('fs').readFileSync("config.json"));
+var config = JSON.parse(require('fs').readFileSync(process.argv[2]));
 
 // Static config values
 const WAV_PATH = "/tmp/hive-sound.wav";
-const LOG = "./logs/monitor.log";
+const LOGS = "./logs";
 const BME680_SCRIPT = "./py/bme680-collect.py";
 const GAS_BASELINE = 250000.0;
 const HUMID_BASELINE = 20.0;
@@ -24,7 +27,7 @@ var client = clientFromConnectionString(connectionString);
 const exec = require('child_process').exec;
 var uuid = require('uuid/v4');
 const utils = require('./utils');
-const log = require('simple-node-logger').createSimpleLogger(LOG);
+const log = require('simple-node-logger').createSimpleLogger(`${LOGS}/${config.iotDeviceId}.log`);
 log.setLevel('info');
 
 //
@@ -36,11 +39,20 @@ var connect = function (err) {
   } else {
     log.info(`Device connected`);
 
-    // Call the collect() function every interval, loops forever
-    setInterval(collectData, config.pollInterval * 1000);
-    
-    // Initial call at startup
-    collectData();
+    if(config.simulator) {
+      tempPrev = 25;
+      humPrev = 50;
+      aqPrev = 50;
+      soundPrev = -40;
+      pressPrev = 1000;
+      // Call the fake collector function every interval, loops forever
+      setInterval(collectSimulatedData, config.pollInterval * 1000);
+      collectSimulatedData();
+    } else {
+      // Call the real collector function every interval, loops forever
+      setInterval(collectData, config.pollInterval * 1000);
+      collectData();
+    }
   }
 };
 
@@ -116,6 +128,55 @@ async function collectData() {
     collectError = true;
     log.error(error);
   }
+
+  // Format message object
+  var msg = JSON.stringify({
+    deviceId: config.iotDeviceId,
+    uuid: uuid(),
+    data: { 
+      temperature: temperature,
+      humidity: humidity,
+      airQuality: airQuality,
+      soundDb: soundDb,
+      pressure: pressure
+    }
+  });
+
+  // Now send message to Azure
+  var message = new Message(msg);
+  if(!collectError) {
+    log.info(`Sending message to Azure: ${message.getData()}`);
+    client.sendEvent(message, (err, res) => {
+      if(err) {
+        log.error(`IOT HUB ERROR ${JSON.stringify(err)}`)
+      } else {
+        log.trace(`IOT RESULT ${JSON.stringify(res)}`);
+      }
+    });
+  } else {
+    log.error(`Skipping message sending due to error`);  
+  }
+}
+
+function collectSimulatedData() {
+  let temperature = tempPrev + (Math.random() * 4) - 2; 
+  temperature = utils.clamp(temperature, 5, 50); 
+  tempPrev = temperature;
+  let humidity = humPrev + (Math.random() * 8) - 4; 
+  humidity = utils.clamp(humidity, 0, 100);
+  humPrev = humidity;
+  let airQuality = aqPrev + (Math.random() * 8) - 4; 
+  airQuality = utils.clamp(airQuality, 0, 100);
+  aqPrev = airQuality;
+  let soundDb = soundPrev + (Math.random() * 4) - 2; 
+  soundDb = utils.clamp(soundDb, -100, 0);
+  soundPrev = soundDb;
+  let pressure = pressPrev + (Math.random() * 16) - 8; 
+  pressure = utils.clamp(pressure, 200, 1500);
+  pressPrev = pressure;  
+  let collectError = false
+
+  log.info(`Starting data collection...`);
 
   // Format message object
   var msg = JSON.stringify({
