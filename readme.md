@@ -4,10 +4,9 @@
 |-|-|
 
 
-
 ## Contents
 - **assets**: Images, PPTX and other stuff that isn't code
-- **device**: Python code we're going to run on the IOT device(s). Probably 
-- **simulator**: Simple Node.js simulator for IOT Hub, posts sample messages. Use for testing
+- **device**: Device client for collecting sensor data and sending to Azure
+- **azure**: Templates to deploy HiveAlive to Azure
 - **site**: Node.js Express web site and portal
 

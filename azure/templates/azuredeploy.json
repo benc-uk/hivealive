@@ -1,0 +1,126 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "defaultValue": "hivealive",
+      "type": "String"
+    }
+  },
+  "variables": {
+    "iotHubName": "[concat(parameters('baseName'), '-iothub')]",
+    "funcName": "[concat(parameters('baseName'), '-function')]",
+    "storageAcctName": "[concat('hivedata', uniquestring(resourceGroup().id))]",
+    "servicePlanName": "service-plan"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Devices/IotHubs",
+      "sku": {
+        "name": "F1",
+        "tier": "Free",
+        "capacity": 1
+      },
+      "name": "[variables('iotHubName')]",
+      "apiVersion": "2016-02-03",
+      "location": "westeurope",
+      "properties": {
+        "eventHubEndpoints": {
+          "events": {
+            "retentionTimeInDays": 1,
+            "partitionCount": 2
+          }
+        },
+        "routing": {
+          "endpoints": {
+            "serviceBusQueues": [],
+            "serviceBusTopics": [],
+            "eventHubs": []
+          },
+          "routes": [
+            {
+              "name": "events-route",
+              "source": "DeviceMessages",
+              "condition": "true",
+              "endpointNames": [
+                "events"
+              ],
+              "isEnabled": true
+            }
+          ],
+          "fallbackRoute": {
+            "name": "$fallback",
+            "source": "DeviceMessages",
+            "condition": "true",
+            "endpointNames": [
+              "events"
+            ],
+            "isEnabled": false
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "Storage",
+      "name": "[variables('storageAcctName')]",
+      "apiVersion": "2017-06-01",
+      "location": "westeurope"
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "sku": {
+        "name": "S1",
+        "capacity": 1
+      },
+      "kind": "app",
+      "name": "[variables('servicePlanName')]",
+      "apiVersion": "2015-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "name": "[variables('servicePlanName')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[parameters('baseName')]",
+      "apiVersion": "2016-08-01",
+      "location": "West Europe",
+      "properties": {
+        "serverFarmId": "[variables('servicePlanName')]"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp",
+      "name": "[variables('funcName')]",
+      "apiVersion": "2016-08-01",
+      "location": "West Europe",
+      "properties": {
+        "serverFarmId": "[variables('servicePlanName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "AzureWebJobsDashboard",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAcctName'), ';AccountKey=', listKeys(variables('storageAcctName'),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAcctName'), ';AccountKey=', listKeys(variables('storageAcctName'),'2015-05-01-preview').key1)]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~1"
+            }
+          ]
+        },
+      }
+    }
+  ]
+}
