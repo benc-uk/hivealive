@@ -1,0 +1,21 @@
+{
+  "bindings": [
+    {
+      "type": "eventHubTrigger",
+      "name": "IoTHubMessages",
+      "direction": "in",
+      "path": "iothub-ehub-hive-poc-328894-f5433c6390",
+      "connection": "hive-poc_events_IOTHUB",
+      "cardinality": "many",
+      "consumerGroup": "$Default"
+    },
+    {
+      "type": "table",
+      "name": "outputTable",
+      "tableName": "hiveData",
+      "connection": "AzureWebJobsDashboard",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "baseName": {
-      "defaultValue": "hivealive",
+      "defaultValue": "hive-demo",
       "type": "String"
     }
   },
@@ -17,13 +17,13 @@
     {
       "type": "Microsoft.Devices/IotHubs",
       "sku": {
-        "name": "F1",
-        "tier": "Free",
+        "name": "S1",
+        "tier": "Standard",
         "capacity": 1
       },
       "name": "[variables('iotHubName')]",
       "apiVersion": "2016-02-03",
-      "location": "westeurope",
+      "location": "[resourceGroup().location]",
       "properties": {
         "eventHubEndpoints": {
           "events": {
@@ -69,7 +69,7 @@
       "kind": "Storage",
       "name": "[variables('storageAcctName')]",
       "apiVersion": "2017-06-01",
-      "location": "westeurope"
+      "location": "[resourceGroup().location]"
     },
     {
       "type": "Microsoft.Web/serverfarms",
@@ -77,7 +77,6 @@
         "name": "S1",
         "capacity": 1
       },
-      "kind": "app",
       "name": "[variables('servicePlanName')]",
       "apiVersion": "2015-08-01",
       "location": "[resourceGroup().location]",
@@ -91,17 +90,20 @@
       "kind": "app",
       "name": "[parameters('baseName')]",
       "apiVersion": "2016-08-01",
-      "location": "West Europe",
+      "location": "[resourceGroup().location]",
       "properties": {
         "serverFarmId": "[variables('servicePlanName')]"
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]"
+      ]
     },
     {
       "type": "Microsoft.Web/sites",
       "kind": "functionapp",
       "name": "[variables('funcName')]",
       "apiVersion": "2016-08-01",
-      "location": "West Europe",
+      "location": "[resourceGroup().location]",
       "properties": {
         "serverFarmId": "[variables('servicePlanName')]",
         "siteConfig": {
@@ -117,10 +119,25 @@
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
               "value": "~1"
+            },
+            {
+              "name": "hive-poc_events_IOTHUB",
+              "value": "[concat('Endpoint=', reference(resourceId('Microsoft.Devices/IoTHubs', variables('iotHubName'))).eventHubEndpoints.events.endpoint, ';SharedAccessKeyName=iothubowner;SharedAccessKey=', listKeys(resourceId('Microsoft.Devices/IotHubs', variables('iotHubName')), '2017-01-19').value[0].primaryKey)]"
             }
           ]
-        },
-      }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('servicePlanName'))]",
+        "[resourceId('Microsoft.Devices/IotHubs', variables('iotHubName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAcctName'))]"
+      ]
     }
-  ]
+  ],
+  "outputs": {
+    "test": {
+      "type": "object",
+      "value": "[reference(variables('iotHubName'))]"
+    }
+  }
 }

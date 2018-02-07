@@ -1,0 +1,8 @@
+{
+  "name": "hivealive-functions",
+  "description": "Azure Functions for HiveAlive",
+  "version": "0.0.1",
+  "dependencies": {
+    "azure-storage": "^2.8.0"
+  }
+}
