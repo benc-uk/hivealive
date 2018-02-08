@@ -2,7 +2,7 @@ var tempGauge;
 var humidGauge;
 var airGauge;
 var soundGauge;
-const REFRESH_RATE = 5;   // In seconds
+const REFRESH_RATE = 15;   // In seconds
 
 //
 // Setup the gauges 
@@ -87,6 +87,25 @@ function refreshData() {
   // If no hive selected, skip
   if(!activeHive) return;
 
+  if(activeHive.id.startsWith('hub-')) {
+    $('#hubinfo').empty();
+    fetch(`https://cors-anywhere.herokuapp.com/${API_WEATHER}/${activeHive.location[0]},${activeHive.location[1]}?units=uk2&exclude=minutely,hourly,daily,alerts`)
+    .then(res => {
+      res.json()
+      .then(weather => {
+        for(p in weather.currently) {
+          if(p == 'time' || p == 'icon') continue;
+          $('#hubinfo').append(`<tr><td>${p}:&nbsp;&nbsp;</td><td>${weather.currently[p]}</td></tr>`)
+        }
+      })
+      .catch(err => {console.log(err) } );
+    })
+    .catch(err => { console.log(err) });
+
+    showHub();
+    return;
+  }
+
   // Make REST API call and fetch current data 
   fetch(`${API_ENDPOINT}/hiveData/${activeHive.id}`)
   .then(res => {
@@ -140,6 +159,7 @@ function refreshData() {
 //
 function error(msg) {
   $('#gauges').hide();
+  $('#hubinfo').hide();
   $('#error').show();
   $('#error').text(msg);
 }
@@ -149,5 +169,15 @@ function error(msg) {
 //
 function showGauges() {
   $('#gauges').show();
+  $('#hubinfo').hide();
+  $('#error').hide();
+}
+
+//
+// Show weather info for hub and hide error message
+//
+function showHub() {
+  $('#hubinfo').show();
+  $('#gauges').hide();
   $('#error').hide();
 }

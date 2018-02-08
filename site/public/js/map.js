@@ -24,9 +24,16 @@ function initMap() {
 }
 
 function addHivetoMap(hive) {
+  
+  // Hacky choice of hive vs hub based on name for now
+  if(hive.id.startsWith('hub-')) {
+    var iconImg = '/public/img/hub.png'
+  } else {
+    var iconImg = '/public/img/hive-48.png'
+  }
   var pin = new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location(hive.location[0], hive.location[1]), {
     title: hive.name,
-    icon: '/public/img/hive-48.png',
+    icon: iconImg,
     anchor: new Microsoft.Maps.Point(16, 16)
   });
 
