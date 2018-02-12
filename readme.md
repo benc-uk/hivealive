@@ -11,3 +11,37 @@
 - **azure/functions**: Azure Functions serverless code for message processing and API
 - **site**: Node.js Express web site and portal
 
+## Device Setup on Raspberry Pi
+This guide assumes you are running Raspbian Stretch Lite
+https://www.raspberrypi.org/downloads/raspbian/
+
+First time fresh setup:  
+
+Run `raspi-config`
+- Enable Wifi
+- Enable SSH
+- Enable I2C
+
+Update APT
+```
+sudo apt-get update
+sudo apt-get dist-upgrade
+```
+Then reboot 
+
+### Install Node.js
+```
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+### Install ffpmeg
+```
+sudo apt install -y ffmpeg
+```
+
+### Install BME680 Python library 
+```
+sudo apt install -y i2c-tools python-pip python-smbus
+sudo pip2 install bme680
+```
