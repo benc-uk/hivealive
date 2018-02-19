@@ -99,8 +99,7 @@ function refreshData() {
           prop = prop.charAt(0).toUpperCase() + prop.slice(1);
           $('#hubinfo').append(`<tr><td>${prop}:&nbsp;&nbsp;&nbsp;&nbsp;</td><td>${weather.currently[p]}</td></tr>`)
         }
-        var skycons = new Skycons({ "color": "#333" });
-        console.log(weather.currently.icon);     
+        var skycons = new Skycons({ "color": "#333" });   
         skycons.add("weather_icon", weather.currently.icon);
         skycons.play();
       })
@@ -165,7 +164,7 @@ function refreshData() {
 //
 function error(msg) {
   $('#gauges').hide();
-  $('#hubinfo').hide();
+  $('#hubrow').hide();
   $('#error').show();
   $('#error').text(msg);
 }
@@ -175,7 +174,7 @@ function error(msg) {
 //
 function showGauges() {
   $('#gauges').show();
-  $('#hubinfo').hide();
+  $('#hubrow').hide();
   $('#error').hide();
 }
 
@@ -183,7 +182,7 @@ function showGauges() {
 // Show weather info for hub and hide error message
 //
 function showHub() {
-  $('#hubinfo').show();
+  $('#hubrow').show();
   $('#gauges').hide();
   $('#error').hide();
 }
