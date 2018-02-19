@@ -57,6 +57,7 @@
 
         <!-- Hub info (weather) -->
         <div class="row" id="hubrow">
+          <h2>&nbsp;&nbsp; HiveHub Environmental Data</h2>
           <div class="col-xs-6">
             <table id="hubinfo">
             </table>
@@ -83,6 +84,7 @@
     var hives = <%- hivesJSON %>;
     var activeHive = null;
     initAllGauges();
+    error('Loading data...');
     selectHive(hives[0]);
   </script>
 
