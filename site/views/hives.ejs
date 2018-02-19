@@ -24,6 +24,7 @@
         <div id="hiveMap"></div>
         <br/>
 
+        <!-- Gauges -->
         <div id="gauges">
           <div class="row">
             <div class="col-xs-12 col-md-6">
@@ -54,12 +55,21 @@
           </div>        
         </div> <!-- end gauges -->
 
-        <table id="hubinfo">
+        <!-- Hub info (weather) -->
+        <div class="row">
+          <div class="col-xs-6">
+            <table id="hubinfo">
+            </table>
+          </div>
+          <div class="col-xs-6">
+             <canvas id="weather_icon" width="256" height="256"></canvas>
+          </div>
+        </div>
 
-        </table>
-
+        <!-- Info box -->
         <div id="info"></div>
 
+        <!-- Error messages -->
         <h3 id="error" class="text-warning"></h3>
 
       </div>
@@ -68,6 +78,7 @@
 
   <script src="/public/js/hives.js"></script>
   <script src="/public/js/map.js"></script>
+  <script src='/public/js/skycons.js'></script>
   <script>
     var hives = <%- hivesJSON %>;
     var activeHive = null;

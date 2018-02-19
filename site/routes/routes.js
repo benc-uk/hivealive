@@ -42,4 +42,13 @@ router
   });
 })
 
+
+.get('/global', function (req, res, next) {
+  res.render('global', 
+  { 
+    title: 'HiveAlive: Global View'
+  });
+})
+
+
 module.exports = router;

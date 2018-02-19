@@ -95,8 +95,14 @@ function refreshData() {
       .then(weather => {
         for(p in weather.currently) {
           if(p == 'time' || p == 'icon') continue;
-          $('#hubinfo').append(`<tr><td>${p}:&nbsp;&nbsp;</td><td>${weather.currently[p]}</td></tr>`)
+          var prop = p.replace( /([A-Z])/g, " $1" );
+          prop = prop.charAt(0).toUpperCase() + prop.slice(1);
+          $('#hubinfo').append(`<tr><td>${prop}:&nbsp;&nbsp;&nbsp;&nbsp;</td><td>${weather.currently[p]}</td></tr>`)
         }
+        var skycons = new Skycons({ "color": "#333" });
+        console.log(weather.currently.icon);     
+        skycons.add("weather_icon", weather.currently.icon);
+        skycons.play();
       })
       .catch(err => {console.log(err) } );
     })
