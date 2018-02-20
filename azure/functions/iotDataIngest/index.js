@@ -1,6 +1,9 @@
+var util = require('util');
+
 module.exports = function (context, IoTHubMessages) {
   
     context.bindings.outputTable = [];
+    var msg = null;
 
     IoTHubMessages.forEach(message => {
         context.log(`### Received message ${message.deviceId}, ${message.uuid}`);
@@ -13,7 +16,28 @@ module.exports = function (context, IoTHubMessages) {
         }
 
         context.bindings.outputTable.push(newrow);
+
+        // Check thresholds
+
+        // This is *really* bad & hacky way of handling the alerts, 
+        // Even by POC standards!
+        var alert = false;
+        if(parseFloat(message.data.temperature) > 30) alert = true;
+        if(parseFloat(message.data.humidity) > 70) alert = true;
+
+        if(alert) {
+            context.log('### Sending alert email!');
+            msg = {
+                subject: "Alert from HiveAlive",
+                content: [{
+                    type: 'text/plain',
+                    value: `Warning! Sensors in your hive ${message.deviceId} have detected readings that breech your thresholds`
+                }]
+            }
+        }
     });
 
-    context.done();
+    context.done(null, {
+        message: msg
+    });
 };

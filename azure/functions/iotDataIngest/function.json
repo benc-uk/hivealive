@@ -15,6 +15,15 @@
       "tableName": "hiveData",
       "connection": "AzureWebJobsDashboard",
       "direction": "out"
+    },
+    {
+      "type": "sendGrid",
+      "name": "message",
+      "apiKey": "SENDGRIDKEY",
+      "to": "change.me@dummy.net",
+      "from": "change.me@dummy.net",
+      "subject": "Alert from HiveAlive",
+      "direction": "out"
     }
   ],
   "disabled": false
